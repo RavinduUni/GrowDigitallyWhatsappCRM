@@ -1,76 +1,55 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import ConversationList from '../components/ConversationList.jsx';
-import ChatWindow from '../components/ChatWindow.jsx';
-import CustomerPanel from '../components/CustomerPanel.jsx';
-import { getSocket } from '../services/socket.js';
-import { dummyConversations, dummyMessages } from '../dummyData.js';
+import { useState, useEffect, useCallback, useRef } from "react";
+import ConversationList from "../components/ConversationList.jsx";
+import ChatWindow from "../components/ChatWindow.jsx";
+import CustomerPanel from "../components/CustomerPanel.jsx";
+import { getSocket } from "../services/socket.js";
+import api from "../services/api.js";
 
 const Inbox = () => {
-  // Conversations
   const [conversations, setConversations] = useState([]);
   const [loadingConvs, setLoadingConvs] = useState(true);
 
-  // Selected conversation
   const [selected, setSelected] = useState(null);
   const selectedRef = useRef(null);
 
-  // Messages
   const [messages, setMessages] = useState([]);
   const [loadingMsgs, setLoadingMsgs] = useState(false);
 
-  // AI state
   const [aiEnabled, setAiEnabled] = useState(true);
-
-  // Customer panel visibility — closed by default
   const [showPanel, setShowPanel] = useState(false);
-  const togglePanel = () => setShowPanel((p) => !p);
 
-  // Keep ref in sync
+  const togglePanel = () => setShowPanel((prev) => !prev);
+
   useEffect(() => {
     selectedRef.current = selected;
   }, [selected]);
 
-  // ─── Fetch conversations ───
-  useEffect(() => {
-    const fetchConversations = async () => {
-      try {
-        // TODO: Call GET /api/conversations
-        // const { data } = await getConversations();
-        // setConversations(data.conversations || data || []);
-        setConversations(dummyConversations);
-      } catch {
-        // handle error
-      } finally {
-        setLoadingConvs(false);
-      }
-    };
-    fetchConversations();
-  }, []);
+  const fetchMessages = useCallback(async (conversationId, showLoading = false) => {
+    if (!conversationId) return;
 
-  // ─── Fetch messages for selected conversation ───
-  const fetchMessages = useCallback(async (conversationId) => {
-    setLoadingMsgs(true);
     try {
-      // TODO: Call GET /api/messages/:conversationId
-      // const { data } = await getMessages(conversationId);
-      // setMessages(data.messages || data || []);
-      setMessages(dummyMessages[conversationId] || []);
-    } catch {
-      // handle error
+      if (showLoading) setLoadingMsgs(true);
+
+      const response = await api.get(`/api/messages/${conversationId}`);
+      setMessages(response.data.data || []);
+    } catch (error) {
+      console.error("Failed to fetch messages:", error);
     } finally {
-      setLoadingMsgs(false);
+      if (showLoading) setLoadingMsgs(false);
     }
   }, []);
 
-  // ─── Select conversation ───
-  const handleSelect = useCallback(
-    (conv) => {
-      setSelected(conv);
-      setAiEnabled(conv.aiEnabled ?? true);
-      fetchMessages(conv._id);
-      setShowPanel(false); // reset panel on new conversation
+  const selectConversation = useCallback(
+    async (conv, showLoading = true) => {
+      if (!conv) return;
 
-      // Mark as read locally
+      setSelected(conv);
+      selectedRef.current = conv;
+      setAiEnabled(conv.aiEnabled ?? true);
+      setShowPanel(false);
+
+      await fetchMessages(conv._id, showLoading);
+
       setConversations((prev) =>
         prev.map((c) => (c._id === conv._id ? { ...c, unreadCount: 0 } : c))
       );
@@ -78,89 +57,188 @@ const Inbox = () => {
     [fetchMessages]
   );
 
-  // ─── Send message ───
+  const fetchConversations = useCallback(
+    async (showLoading = false) => {
+      try {
+        if (showLoading) setLoadingConvs(true);
+
+        const response = await api.get("/api/conversations");
+        const convs = response.data.data || [];
+
+        setConversations(convs);
+
+        if (!selectedRef.current && convs.length > 0) {
+          const firstConv = convs[0];
+          setSelected(firstConv);
+          selectedRef.current = firstConv;
+          setAiEnabled(firstConv.aiEnabled ?? true);
+          await fetchMessages(firstConv._id, true);
+        }
+      } catch (error) {
+        console.error("Failed to fetch conversations:", error);
+      } finally {
+        if (showLoading) setLoadingConvs(false);
+      }
+    },
+    [fetchMessages]
+  );
+
+  const handleSelect = useCallback(
+    async (conv) => {
+      await selectConversation(conv, true);
+    },
+    [selectConversation]
+  );
+
   const handleSend = useCallback(
     async (text) => {
-      if (!selected) return;
-      try {
-        // TODO: Call POST /api/messages/send
-        // const { data } = await sendMessage(selected._id, text);
-        // const newMsg = data.message || data;
-        const newMsg = {
-          _id: Date.now().toString(),
-          body: text,
-          sender: 'admin',
-          direction: 'outbound',
-          timestamp: new Date().toISOString(),
-          status: 'sent',
-        };
-        setMessages((prev) => [...prev, newMsg]);
+      if (!selected || !text?.trim()) return;
 
-        // Update conversation list
-        setConversations((prev) =>
-          prev.map((c) =>
-            c._id === selected._id
-              ? { ...c, lastMessage: text, lastMessageTime: new Date().toISOString() }
-              : c
-          )
-        );
-      } catch {
-        throw new Error('Send failed');
+      const optimisticMsg = {
+        _id: Date.now().toString(),
+        text,
+        senderType: "admin",
+        direction: "outbound",
+        timestamp: new Date().toISOString(),
+        status: "sent",
+      };
+
+      setMessages((prev) => [...prev, optimisticMsg]);
+
+      setConversations((prev) =>
+        prev.map((c) =>
+          c._id === selected._id
+            ? {
+              ...c,
+              lastMessage: text,
+              lastMessageTime: new Date().toISOString(),
+            }
+            : c
+        )
+      );
+
+      try {
+        // Next step: connect manual reply API.
+        // await api.post("/api/messages/send", {
+        //   conversationId: selected._id,
+        //   text,
+        // });
+      } catch (error) {
+        console.error("Send failed:", error);
       }
     },
     [selected]
   );
 
-  // ─── Toggle AI ───
   const handleToggleAI = useCallback(async () => {
     if (!selected) return;
-    try {
-      // TODO: Call PATCH /api/conversations/:id/toggle-ai
-      // const { data } = await toggleAI(selected._id);
-      setAiEnabled((prev) => !prev);
-    } catch {
-      // handle error
-    }
-  }, [selected]);
 
-  // ─── Takeover ───
+    try {
+      const response = await api.patch(
+        `/api/conversations/${selected._id}/toggle-ai`
+      );
+
+      const updated = response.data.data || {};
+      const nextAiState = updated.aiEnabled ?? !aiEnabled;
+
+      setAiEnabled(nextAiState);
+
+      setSelected((prev) =>
+        prev ? { ...prev, ...updated, aiEnabled: nextAiState } : prev
+      );
+
+      setConversations((prev) =>
+        prev.map((c) =>
+          c._id === selected._id
+            ? { ...c, ...updated, aiEnabled: nextAiState }
+            : c
+        )
+      );
+    } catch (error) {
+      console.error("Failed to toggle AI:", error);
+    }
+  }, [selected, aiEnabled]);
+
   const handleTakeover = useCallback(async () => {
     if (!selected) return;
+
     try {
-      // TODO: Call PATCH /api/conversations/:id/takeover
-      // await takeoverConversation(selected._id);
-      setAiEnabled(false);
-      setSelected((prev) => (prev ? { ...prev, aiEnabled: false, status: 'handoff' } : prev));
+      const takeover = !selected.humanTakeover;
+
+      const response = await api.patch(
+        `/api/conversations/${selected._id}/takeover`,
+        { takeover }
+      );
+
+      const updated = response.data.data || {
+        humanTakeover: takeover,
+        aiEnabled: !takeover,
+        status: takeover ? "handoff" : selected.status,
+      };
+
+      setAiEnabled(updated.aiEnabled ?? false);
+
+      setSelected((prev) => (prev ? { ...prev, ...updated } : prev));
+
       setConversations((prev) =>
         prev.map((c) =>
-          c._id === selected._id ? { ...c, status: 'handoff', aiEnabled: false } : c
+          c._id === selected._id ? { ...c, ...updated } : c
         )
       );
-    } catch {
-      // handle error
+    } catch (error) {
+      console.error("Failed to takeover conversation:", error);
     }
   }, [selected]);
 
-  // ─── Status change ───
-  const handleStatusChange = useCallback(async (newStatus) => {
-    if (!selected) return;
-    try {
-      // TODO: Call PATCH /api/conversations/:id/status
-      // await updateConversationStatus(selected._id, newStatus);
-      setSelected((prev) => (prev ? { ...prev, status: newStatus } : prev));
-      setConversations((prev) =>
-        prev.map((c) =>
-          c._id === selected._id ? { ...c, status: newStatus } : c
-        )
-      );
-    } catch {
-      // handle error
-    }
-  }, [selected]);
+  const handleStatusChange = useCallback(
+    async (newStatus) => {
+      if (!selected) return;
 
-  // ─── Socket listeners ───
+      try {
+        const response = await api.patch(
+          `/api/conversations/${selected._id}/status`,
+          { status: newStatus }
+        );
+
+        const updated = response.data.data || { status: newStatus };
+
+        setSelected((prev) =>
+          prev ? { ...prev, ...updated, status: newStatus } : prev
+        );
+
+        setConversations((prev) =>
+          prev.map((c) =>
+            c._id === selected._id
+              ? { ...c, ...updated, status: newStatus }
+              : c
+          )
+        );
+      } catch (error) {
+        console.error("Failed to update status:", error);
+      }
+    },
+    [selected]
+  );
+
+  useEffect(() => {
+    fetchConversations(true);
+  }, [fetchConversations]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchConversations(false);
+
+      if (selectedRef.current?._id) {
+        fetchMessages(selectedRef.current._id, false);
+      }
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [fetchConversations, fetchMessages]);
+
   useEffect(() => {
     const socket = getSocket();
+
     if (!socket) return;
 
     const onNewMessage = (data) => {
@@ -182,15 +260,15 @@ const Inbox = () => {
         );
       }
 
-      // Update last message
       setConversations((prev) =>
         prev.map((c) =>
           c._id === convId
             ? {
-                ...c,
-                lastMessage: msg.body || msg.content || msg.text || '',
-                lastMessageTime: msg.timestamp || msg.createdAt || new Date().toISOString(),
-              }
+              ...c,
+              lastMessage: msg.text || msg.body || msg.content || "",
+              lastMessageTime:
+                msg.timestamp || msg.createdAt || new Date().toISOString(),
+            }
             : c
         )
       );
@@ -198,17 +276,21 @@ const Inbox = () => {
 
     const onConversationUpdated = (data) => {
       const conv = data.conversation || data;
+
       setConversations((prev) =>
         prev.map((c) => (c._id === conv._id ? { ...c, ...conv } : c))
       );
+
       if (selectedRef.current?._id === conv._id) {
         setSelected((prev) => (prev ? { ...prev, ...conv } : prev));
+        setAiEnabled(conv.aiEnabled ?? true);
       }
     };
 
     const onMessageSent = (data) => {
       const msg = data.message || data;
       const convId = msg.conversationId || data.conversationId;
+
       if (selectedRef.current?._id === convId) {
         setMessages((prev) => {
           if (prev.some((m) => m._id === msg._id)) return prev;
@@ -217,20 +299,19 @@ const Inbox = () => {
       }
     };
 
-    socket.on('new_message', onNewMessage);
-    socket.on('conversation_updated', onConversationUpdated);
-    socket.on('message_sent', onMessageSent);
+    socket.on("new_message", onNewMessage);
+    socket.on("conversation_updated", onConversationUpdated);
+    socket.on("message_sent", onMessageSent);
 
     return () => {
-      socket.off('new_message', onNewMessage);
-      socket.off('conversation_updated', onConversationUpdated);
-      socket.off('message_sent', onMessageSent);
+      socket.off("new_message", onNewMessage);
+      socket.off("conversation_updated", onConversationUpdated);
+      socket.off("message_sent", onMessageSent);
     };
   }, []);
 
   return (
-    <>
-      {/* Conversation List */}
+    <div className="flex h-full w-full overflow-hidden">
       <ConversationList
         conversations={conversations}
         selectedId={selected?._id}
@@ -238,7 +319,6 @@ const Inbox = () => {
         loading={loadingConvs}
       />
 
-      {/* Chat Window */}
       <ChatWindow
         conversation={selected}
         messages={messages}
@@ -251,14 +331,13 @@ const Inbox = () => {
         onTogglePanel={togglePanel}
       />
 
-      {/* Customer Panel — only visible when showPanel is true */}
       {showPanel && selected && (
         <CustomerPanel
           conversation={selected}
           onStatusChange={handleStatusChange}
         />
       )}
-    </>
+    </div>
   );
 };
 

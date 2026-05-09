@@ -14,7 +14,7 @@ const MessageBubble = ({ message }) => {
   if (isCustomer) {
     return (
       <div className="flex justify-start">
-        <div className="bg-chat-received rounded-lg rounded-tl-sm p-3 pb-2 max-w-[65%] shadow-sm">
+        <div className="bg-chat-received rounded-lg rounded-tl-sm p-3 pb-2 max-w-[40%] shadow-sm">
           <p className="font-chat-text text-chat-text text-on-surface wrap-break-word whitespace-pre-wrap">
             {message.body || message.content || message.text || ''}
           </p>
@@ -31,7 +31,7 @@ const MessageBubble = ({ message }) => {
   // Bot/Admin message — right aligned, green bubble
   return (
     <div className="flex justify-end">
-      <div className="bg-chat-sent rounded-lg rounded-tr-sm p-3 pb-2 max-w-[65%] shadow-sm border border-primary/10">
+      <div className="bg-chat-sent rounded-lg rounded-tr-sm p-3 pb-2 max-w-[40%] shadow-sm border border-primary/10">
         {/* Sender label */}
         <div className="flex items-center mb-1 text-primary font-label-sm text-[11px]">
           <span className="material-symbols-outlined text-[14px] mr-1">

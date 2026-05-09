@@ -12,7 +12,7 @@ const CustomerPanel = ({ conversation, onClose, onStatusChange }) => {
   const customer = conversation.customer || conversation;
 
   return (
-    <aside className="w-1/4 shrink-0 bg-surface border-l border-panel-border h-full overflow-y-auto z-10 shadow-[-4px_0_15px_rgba(0,0,0,0.03)]">
+    <aside className="w-[320px] shrink-0 bg-surface border-l border-panel-border h-full overflow-y-auto z-10 shadow-[-4px_0_15px_rgba(0,0,0,0.03)]">
       {/* Header — Profile */}
       <div className="p-lg border-b border-panel-border text-center flex flex-col items-center bg-linear-to-b from-surface-bright to-surface">
         {/* Avatar */}

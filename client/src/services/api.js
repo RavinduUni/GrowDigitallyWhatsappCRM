@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
+  baseURL: import.meta.env.VITE_REACT_APP_BACKEND_BASEURL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -35,33 +35,8 @@ api.interceptors.response.use(
   }
 );
 
-// ─── Auth ───
-export const login = (email, password) =>
-  api.post('/api/auth/login', { email, password });
+// Conversations
 
-export const getMe = () => api.get('/api/auth/me');
 
-// ─── Conversations ───
-export const getConversations = (params) =>
-  api.get('/api/conversations', { params });
-
-export const getConversation = (id) =>
-  api.get(`/api/conversations/${id}`);
-
-export const updateConversationStatus = (id, status) =>
-  api.patch(`/api/conversations/${id}/status`, { status });
-
-export const toggleAI = (id) =>
-  api.patch(`/api/conversations/${id}/toggle-ai`);
-
-export const takeoverConversation = (id) =>
-  api.patch(`/api/conversations/${id}/takeover`);
-
-// ─── Messages ───
-export const getMessages = (conversationId) =>
-  api.get(`/api/messages/${conversationId}`);
-
-export const sendMessage = (conversationId, message) =>
-  api.post('/api/messages/send', { conversationId, message });
 
 export default api;

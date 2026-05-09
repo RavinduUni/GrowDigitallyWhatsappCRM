@@ -61,7 +61,7 @@ const ConversationList = ({
   }, [conversations, activeFilter, search]);
 
   return (
-    <aside className="w-2/7 shrink-0 border-r border-panel-border bg-surface flex flex-col h-full z-10 relative">
+    <aside className="w-[380px] shrink-0 border-r border-panel-border bg-surface flex flex-col h-full z-10 relative overflow-hidden">
       {/* Top App Bar */}
       <div className="px-md py-sm border-b border-panel-border bg-surface sticky top-0 z-40">
         <div className="flex justify-between items-center mb-sm">
@@ -94,13 +94,12 @@ const ConversationList = ({
             <button
               key={f.key}
               onClick={() => setActiveFilter(f.key)}
-              className={`whitespace-nowrap font-label-sm text-label-sm border border-green-300 rounded-2xl py-1 px-3 transition-colors cursor-pointer ${
-                activeFilter === f.key
+              className={`whitespace-nowrap font-label-sm text-label-sm border border-green-300 rounded-2xl py-1 px-3 transition-colors cursor-pointer ${activeFilter === f.key
                   ? 'text-white bg-primary border-primary'
                   : 'text-on-surface-variant hover:text-primary'
-              }`}
+                }`}
             >
-              {f.label} 
+              {f.label}
             </button>
           ))}
         </div>
@@ -133,11 +132,10 @@ const ConversationList = ({
               <div
                 key={conv._id}
                 onClick={() => onSelect(conv)}
-                className={`flex items-start p-sm border-b border-panel-border cursor-pointer transition-colors relative ${
-                  isActive
+                className={`flex items-start p-sm border-b border-panel-border cursor-pointer transition-colors relative ${isActive
                     ? 'bg-surface-container-high shadow-surface'
                     : 'bg-surface-container-lowest hover:bg-surface-container-low'
-                }`}
+                  }`}
               >
                 {/* Active indicator */}
                 {isActive && (
@@ -175,9 +173,8 @@ const ConversationList = ({
                   {conv.status && conv.status !== 'all' && (
                     <div className="mt-xs">
                       <span
-                        className={`inline-block font-label-sm text-label-sm px-2 py-0.5 rounded-full text-[10px] ${
-                          statusBadgeStyles[conv.status] || 'bg-surface-container text-on-surface'
-                        }`}
+                        className={`inline-block font-label-sm text-label-sm px-2 py-0.5 rounded-full text-[10px] ${statusBadgeStyles[conv.status] || 'bg-surface-container text-on-surface'
+                          }`}
                       >
                         {conv.status === 'hot_lead' ? 'Hot Lead' : conv.status.charAt(0).toUpperCase() + conv.status.slice(1)}
                       </span>

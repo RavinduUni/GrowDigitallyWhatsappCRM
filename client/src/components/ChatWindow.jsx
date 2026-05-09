@@ -14,9 +14,9 @@ const ChatWindow = ({
   onTogglePanel,
 }) => {
   const bottomRef = useRef(null);
-  const [toggling, setToggling]     = useState(false);
+  const [toggling, setToggling] = useState(false);
   const [takingOver, setTakingOver] = useState(false);
-  const [menuOpen, setMenuOpen]     = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const ChatWindow = ({
   return (
     <main className="flex-1 flex flex-col bg-[#F0F2F5] min-w-0 relative z-0">
       {/* ─── Chat Header ─── */}
-      <header className="h-[72px] bg-surface border-b border-panel-border flex items-center justify-between px-md flex-shrink-0 shadow-sm z-10">
+      <header className="h-[72px] bg-surface border-b border-panel-border flex items-center justify-between px-md shrink-0 shadow-sm z-10">
 
         {/* LEFT — clickable avatar + name → opens panel */}
         <button
@@ -88,7 +88,7 @@ const ChatWindow = ({
         </button>
 
         {/* RIGHT — actions */}
-        <div className="flex items-center space-x-sm flex-shrink-0">
+        <div className="flex items-center space-x-sm shrink-0">
 
           {/* AI Toggle pill */}
           <div className="flex items-center bg-surface-container border border-outline-variant rounded-full p-1">

@@ -15,7 +15,7 @@ export const connectSocket = (token) => {
     reconnectionDelay: 1000,
   });
 
-  socket.on('connect', () => {
+  socket.on('connect', () => { 
     console.log('[Socket] Connected:', socket.id);
   });
 

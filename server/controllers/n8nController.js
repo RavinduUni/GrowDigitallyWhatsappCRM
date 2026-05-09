@@ -27,7 +27,7 @@ export const getWebhook = async (req, res) => {
             customer = await Customer.create({
                 phone: waId,
                 waId,
-                profileName: "WhatsApp User",
+                profileName: waId,
                 source: "whatsapp",
                 lastActivityAt: new Date(),
             });
