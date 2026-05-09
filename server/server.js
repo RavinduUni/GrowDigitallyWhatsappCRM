@@ -34,5 +34,4 @@ app.get("/", (req, res) => {
 
 app.use("/api/n8n", n8nRouter);
 
-// ✅ Export for Vercel — Vercel manages the HTTP server, NOT app.listen()
 export default app;
