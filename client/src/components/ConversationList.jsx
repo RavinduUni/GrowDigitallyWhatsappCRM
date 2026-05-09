@@ -111,7 +111,7 @@ const ConversationList = ({
           // Skeleton loaders
           Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="flex items-start p-sm border-b border-panel-border animate-pulse">
-              <div className="w-12 h-12 rounded-full bg-surface-container-high mr-sm mt-1 flex-shrink-0" />
+              <div className="w-12 h-12 rounded-full bg-surface-container-high mr-sm mt-1 shrink-0" />
               <div className="flex-1 space-y-2 py-1">
                 <div className="h-4 bg-surface-container-high rounded w-3/4" />
                 <div className="h-3 bg-surface-container-high rounded w-1/2" />
@@ -143,7 +143,7 @@ const ConversationList = ({
                 )}
 
                 {/* Avatar */}
-                <div className="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-h2 text-h2 mr-sm mt-1 flex-shrink-0 uppercase">
+                <div className="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-h2 text-h2 mr-sm mt-1 shrink-0 uppercase">
                   {(conv.customerName || conv.customerPhone || '?').charAt(0)}
                 </div>
 
@@ -153,7 +153,7 @@ const ConversationList = ({
                     <h3 className="font-body-lg text-body-lg text-on-surface truncate pr-2">
                       {conv.customerName || conv.customerPhone || 'Unknown'}
                     </h3>
-                    <span className="font-label-sm text-label-sm text-on-surface-variant flex-shrink-0">
+                    <span className="font-label-sm text-label-sm text-on-surface-variant shrink-0">
                       {formatTime(conv.lastMessageTime || conv.updatedAt)}
                     </span>
                   </div>
@@ -163,7 +163,7 @@ const ConversationList = ({
                       {conv.lastMessage || 'No messages yet'}
                     </p>
                     {conv.unreadCount > 0 && (
-                      <span className="bg-primary text-on-primary font-label-sm text-label-sm rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 ml-1">
+                      <span className="bg-primary text-on-primary font-label-sm text-label-sm rounded-full w-5 h-5 flex items-center justify-center shrink-0 ml-1">
                         {conv.unreadCount > 99 ? '99+' : conv.unreadCount}
                       </span>
                     )}

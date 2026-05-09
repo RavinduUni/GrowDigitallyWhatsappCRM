@@ -39,6 +39,19 @@ const Inbox = () => {
     }
   }, []);
 
+  const fetchConversations = useCallback(async (showLoading = false) => {
+    try {
+      if (showLoading) setLoadingConvs(true);
+
+      const response = await api.get("/api/conversations");
+      setConversations(response.data.data || []);
+    } catch (error) {
+      console.error("Failed to fetch conversations:", error);
+    } finally {
+      if (showLoading) setLoadingConvs(false);
+    }
+  }, []);
+
   const selectConversation = useCallback(
     async (conv, showLoading = true) => {
       if (!conv) return;
@@ -50,38 +63,27 @@ const Inbox = () => {
 
       await fetchMessages(conv._id, showLoading);
 
+      try {
+        await api.patch(`/api/conversations/${conv._id}/read`);
+      } catch (error) {
+        console.error("Failed to mark as read:", error);
+      }
+
       setConversations((prev) =>
-        prev.map((c) => (c._id === conv._id ? { ...c, unreadCount: 0 } : c))
+        prev.map((c) =>
+          c._id === conv._id ? { ...c, unreadCount: 0 } : c
+        )
       );
     },
     [fetchMessages]
   );
 
-  const fetchConversations = useCallback(
-    async (showLoading = false) => {
-      try {
-        if (showLoading) setLoadingConvs(true);
-
-        const response = await api.get("/api/conversations");
-        const convs = response.data.data || [];
-
-        setConversations(convs);
-
-        if (!selectedRef.current && convs.length > 0) {
-          const firstConv = convs[0];
-          setSelected(firstConv);
-          selectedRef.current = firstConv;
-          setAiEnabled(firstConv.aiEnabled ?? true);
-          await fetchMessages(firstConv._id, true);
-        }
-      } catch (error) {
-        console.error("Failed to fetch conversations:", error);
-      } finally {
-        if (showLoading) setLoadingConvs(false);
-      }
-    },
-    [fetchMessages]
-  );
+  const handleCloseChat = useCallback(() => {
+    setSelected(null);
+    selectedRef.current = null;
+    setMessages([]);
+    setShowPanel(false);
+  }, []);
 
   const handleSelect = useCallback(
     async (conv) => {
@@ -118,7 +120,7 @@ const Inbox = () => {
       );
 
       try {
-        // Next step: connect manual reply API.
+        // Manual reply API will be connected later.
         // await api.post("/api/messages/send", {
         //   conversationId: selected._id,
         //   text,
@@ -224,17 +226,15 @@ const Inbox = () => {
     fetchConversations(true);
   }, [fetchConversations]);
 
+  // Only refresh conversation list.
+  // Do NOT refresh selected chat messages repeatedly.
   useEffect(() => {
     const interval = setInterval(() => {
       fetchConversations(false);
-
-      if (selectedRef.current?._id) {
-        fetchMessages(selectedRef.current._id, false);
-      }
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [fetchConversations, fetchMessages]);
+  }, [fetchConversations]);
 
   useEffect(() => {
     const socket = getSocket();
@@ -250,6 +250,16 @@ const Inbox = () => {
           if (prev.some((m) => m._id === msg._id)) return prev;
           return [...prev, msg];
         });
+
+        api.patch(`/api/conversations/${convId}/read`).catch((error) => {
+          console.error("Failed to mark socket message as read:", error);
+        });
+
+        setConversations((prev) =>
+          prev.map((c) =>
+            c._id === convId ? { ...c, unreadCount: 0 } : c
+          )
+        );
       } else {
         setConversations((prev) =>
           prev.map((c) =>
@@ -329,6 +339,7 @@ const Inbox = () => {
         aiEnabled={aiEnabled}
         showPanel={showPanel}
         onTogglePanel={togglePanel}
+        onClose={handleCloseChat}
       />
 
       {showPanel && selected && (

@@ -46,3 +46,33 @@ export const getConversations = async (req, res) => {
         });
     }
 };
+
+export const markConversationAsRead = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const conversation = await Conversation.findByIdAndUpdate(
+            id,
+            { unreadCount: 0 },
+            { new: true }
+        ).populate("customerId");
+
+        if (!conversation) {
+            return res.status(404).json({
+                success: false,
+                message: "Conversation not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: formatConversation(conversation),
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to mark conversation as read",
+            error: error.message,
+        });
+    }
+};
