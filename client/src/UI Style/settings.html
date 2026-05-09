@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings - WhatsApp CRM</title>
+<!-- Google Fonts: Inter & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface-variant": "#3c4a3d",
+                      "surface-bright": "#f3fcef",
+                      "tertiary-fixed-dim": "#ffb59b",
+                      "outline-variant": "#bbcbb9",
+                      "on-primary": "#ffffff",
+                      "secondary-container": "#a5ede0",
+                      "on-secondary-fixed-variant": "#005047",
+                      "on-secondary-fixed": "#00201c",
+                      "primary-fixed-dim": "#3de273",
+                      "outline": "#6c7b6b",
+                      "on-tertiary-fixed": "#380d00",
+                      "primary-fixed": "#66ff8e",
+                      "on-primary-fixed-variant": "#005322",
+                      "on-secondary": "#ffffff",
+                      "surface-container": "#e7f1e4",
+                      "error": "#ba1a1a",
+                      "inverse-surface": "#2a332a",
+                      "on-secondary-container": "#226e63",
+                      "tertiary-fixed": "#ffdbcf",
+                      "on-surface": "#151e16",
+                      "on-background": "#151e16",
+                      "primary-container": "#25d366",
+                      "error-container": "#ffdad6",
+                      "background": "#f3fcef",
+                      "secondary": "#1c695f",
+                      "on-tertiary-container": "#78351b",
+                      "inverse-on-surface": "#eaf3e6",
+                      "surface-dim": "#d3ddd0",
+                      "primary": "#006d2f",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#763319",
+                      "surface-container-low": "#edf6e9",
+                      "on-primary-fixed": "#002109",
+                      "surface-container-high": "#e2ebde",
+                      "on-error": "#ffffff",
+                      "inverse-primary": "#3de273",
+                      "on-primary-container": "#005523",
+                      "on-tertiary": "#ffffff",
+                      "secondary-fixed": "#a8f0e3",
+                      "surface-container-highest": "#dce5d8",
+                      "secondary-fixed-dim": "#8cd4c7",
+                      "surface": "#f3fcef",
+                      "tertiary": "#93492e",
+                      "surface-variant": "#dce5d8",
+                      "surface-tint": "#006d2f",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-container": "#ffa07e"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "24px",
+                      "xl": "32px",
+                      "panel-sidebar": "320px",
+                      "sm": "8px",
+                      "max-bubble-width": "65%",
+                      "panel-customer": "360px",
+                      "md": "16px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "h1": ["Inter"],
+                      "chat-text": ["Inter"],
+                      "h2": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "h1": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "chat-text": ["15px", {"lineHeight": "21px", "fontWeight": "400"}],
+                      "h2": ["20px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Base typography application */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d3ddd0; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #bbcbb9; 
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md flex h-screen overflow-hidden antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (Generated from JSON) -->
+<nav class="bg-surface-container-highest dark:bg-inverse-surface h-screen w-16 md:w-20 flex flex-col fixed left-0 top-0 flex flex-col items-center py-md space-y-lg z-50 border-r border-outline-variant">
+<!-- Header Avatar/Brand Indicator -->
+<div class="flex flex-col items-center justify-center mb-xl">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary font-bold text-lg shadow-sm">
+                C
+            </div>
+<!-- Text hidden on rail, kept for screen readers based on JSON strings -->
+<span class="sr-only">Cloud API CRM Enterprise CRM Profile</span>
+</div>
+<!-- Navigation Tabs -->
+<div class="flex flex-col space-y-sm w-full">
+<!-- Inbox (Inactive) -->
+<a class="flex flex-col items-center justify-center py-sm mx-sm rounded-lg text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-variant transition-colors scale-95 active:scale-90 transition-transform group" href="#">
+<span class="material-symbols-outlined mb-xs text-[24px] group-hover:text-primary transition-colors">inbox</span>
+<span class="font-label-sm text-label-sm text-[10px] md:text-label-sm">Inbox</span>
+</a>
+<!-- Analytics (Inactive) -->
+<a class="flex flex-col items-center justify-center py-sm mx-sm rounded-lg text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-variant transition-colors scale-95 active:scale-90 transition-transform group" href="#">
+<span class="material-symbols-outlined mb-xs text-[24px] group-hover:text-primary transition-colors">insert_chart</span>
+<span class="font-label-sm text-label-sm text-[10px] md:text-label-sm">Analytics</span>
+</a>
+<!-- Settings (Active) -->
+<a class="flex flex-col items-center justify-center py-sm mx-sm rounded-lg text-secondary dark:text-secondary-fixed-dim font-bold hover:bg-surface-container dark:hover:bg-surface-variant transition-colors scale-95 active:scale-90 transition-transform relative bg-surface-container" href="#">
+<!-- Active indicator line -->
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-secondary rounded-r-full"></div>
+<span class="material-symbols-outlined mb-xs text-[24px]" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-sm text-label-sm text-[10px] md:text-label-sm">Settings</span>
+</a>
+</div>
+<div class="mt-auto w-full flex flex-col items-center pb-md">
+<!-- Logout (Inactive) -->
+<a class="flex flex-col items-center justify-center py-sm mx-sm w-full rounded-lg text-on-surface-variant dark:text-outline-variant hover:bg-error-container hover:text-on-error-container transition-colors scale-95 active:scale-90 transition-transform group" href="#">
+<span class="material-symbols-outlined mb-xs text-[24px]">logout</span>
+<span class="font-label-sm text-label-sm text-[10px] md:text-label-sm">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-16 md:ml-20 bg-background overflow-y-auto w-full">
+<div class="max-w-[960px] mx-auto p-lg md:p-xl w-full">
+<!-- Page Header -->
+<header class="mb-xl flex items-center justify-between">
+<div>
+<h1 class="font-h1 text-h1 text-on-background">Workspace Settings</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Manage your WhatsApp CRM configuration and team access.</p>
+</div>
+</header>
+<div class="flex flex-col gap-lg">
+<!-- Section: Account Profile -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg md:p-xl shadow-sm">
+<h2 class="font-h2 text-h2 text-on-surface border-b border-surface-container-highest pb-sm mb-lg flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">person</span>
+                        Account Profile
+                    </h2>
+<div class="flex flex-col md:flex-row gap-xl items-start">
+<!-- Avatar Column -->
+<div class="flex flex-col items-center gap-sm shrink-0">
+<div class="relative group">
+<img alt="Profile Picture" class="w-24 h-24 rounded-full object-cover border-4 border-background shadow-sm" data-alt="A professional headshot of a female tech executive with warm, natural lighting. The background is a slightly blurred modern office space with neutral tones. She is wearing a dark, tailored blazer, projecting confidence and approachability, suitable for a high-end enterprise software profile avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp4IdG2hF0s3w2D0PZvqbzZ9olCEDqRcavuw9B9g8DaYhA2nrBLyRs1R4DfzeTuVhZzoMERJv44eleQuVKW4jklU5RPNpABYGTrklyP6d23XLekAI_xR2EfrUzp1vFyWUjXuBNjbciOkbI9U5FLzdl5gumepbc-FkX856LRPxdr3wg2alzZePjClHgd9TJsWsFWFWsUbVwSNULlNGBDg3yxOb3HNxhq3NjjOZeSdNAkdNaIF7U7VHADEyF203xjeYfgOgfesk-nRk"/>
+<button class="absolute bottom-0 right-0 bg-surface-container-lowest border border-outline-variant rounded-full p-1.5 shadow-sm hover:bg-surface-container transition-colors text-on-surface">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">JPG, GIF or PNG. Max 1MB.</span>
+</div>
+<!-- Form Column -->
+<div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-md w-full">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface">Full Name</label>
+<input class="bg-surface-container-lowest border border-outline-variant rounded-md px-md py-sm font-body-md text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all w-full placeholder:text-outline" type="text" value="Sarah Jenkins"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface">Email Address</label>
+<input class="bg-surface-container-low border border-outline-variant rounded-md px-md py-sm font-body-md text-on-surface-variant cursor-not-allowed outline-none w-full" disabled="" type="email" value="sarah.jenkins@cloudapi.inc"/>
+</div>
+<div class="flex flex-col gap-xs md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface">Role</label>
+<input class="bg-surface-container-low border border-outline-variant rounded-md px-md py-sm font-body-md text-on-surface-variant cursor-not-allowed outline-none w-full md:w-1/2" disabled="" type="text" value="Workspace Administrator"/>
+</div>
+<div class="md:col-span-2 mt-sm flex justify-end">
+<button class="bg-primary text-on-primary font-label-sm text-label-sm px-lg py-sm rounded-full hover:bg-surface-tint transition-colors shadow-sm flex items-center gap-xs">
+                                    Save Changes
+                                </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: WhatsApp Cloud API Configuration -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg md:p-xl shadow-sm">
+<h2 class="font-h2 text-h2 text-on-surface border-b border-surface-container-highest pb-sm mb-lg flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">api</span>
+                        WhatsApp Cloud API Configuration
+                    </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-lg">Connect your Meta App to enable sending and receiving messages via the WhatsApp Business Platform.</p>
+<div class="flex flex-col gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface font-semibold">Phone Number ID</label>
+<input class="bg-surface-container-lowest border border-outline-variant rounded-md px-md py-sm font-body-md text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all w-full font-mono text-sm" placeholder="e.g. 102938475610293" type="text"/>
+<span class="font-label-sm text-label-sm text-outline">Found in your Meta App Dashboard &gt; WhatsApp &gt; Getting Started.</span>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface font-semibold">System User Access Token</label>
+<div class="relative">
+<input class="bg-surface-container-lowest border border-outline-variant rounded-md px-md py-sm font-body-md text-on-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all w-full font-mono text-sm pr-10" type="password" value="EAAIuZBXZC...longtokenhere..."/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors p-1">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+<span class="font-label-sm text-label-sm text-error flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">warning</span> Needs to be a permanent token.
+                            </span>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface font-semibold">Webhook URL</label>
+<div class="flex gap-sm">
+<input class="bg-surface-container-low border border-outline-variant rounded-md px-md py-sm font-body-md text-on-surface-variant outline-none w-full font-mono text-sm cursor-not-allowed" disabled="" type="text" value="https://api.crm.cloudapi.inc/v1/webhooks/whatsapp"/>
+<button class="border border-outline-variant text-on-surface font-label-sm text-label-sm px-md py-sm rounded-md hover:bg-surface-container transition-colors flex items-center gap-xs whitespace-nowrap bg-surface-container-lowest">
+<span class="material-symbols-outlined text-[16px]">content_copy</span> Copy
+                                </button>
+</div>
+</div>
+<div class="mt-md flex justify-end">
+<button class="bg-primary text-on-primary font-label-sm text-label-sm px-lg py-sm rounded-full hover:bg-surface-tint transition-colors shadow-sm">
+                                Verify &amp; Save API Connection
+                            </button>
+</div>
+</div>
+</section>
+</div>
+<footer class="mt-xl py-lg text-center font-label-sm text-label-sm text-outline">
+                © 2024 Cloud API CRM Enterprise. All systems operational.
+            </footer>
+</div>
+</main>
+</body></html>
