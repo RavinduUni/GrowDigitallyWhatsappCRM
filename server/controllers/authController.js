@@ -7,6 +7,52 @@ const generateToken = (id) => {
     });
 };
 
+export const registerAdmin = async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+
+        if (!name || !email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Name, email and password are required.",
+            });
+        }
+
+        const exists = await Admin.findOne({ email });
+
+        if (exists) {
+            return res.status(400).json({
+                success: false,
+                message: "User already exists.",
+            });
+        }
+
+        const admin = await Admin.create({
+            name,
+            email,
+            password,
+            role: "super_admin",
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "Admin created successfully.",
+            user: {
+                _id: admin._id,
+                name: admin.name,
+                email: admin.email,
+                role: admin.role,
+            },
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to create admin.",
+            error: error.message,
+        });
+    }
+};
+
 export const loginAdmin = async (req, res) => {
     try {
         const { email, password } = req.body;
