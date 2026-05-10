@@ -31,7 +31,9 @@ const Inbox = () => {
       if (showLoading) setLoadingMsgs(true);
 
       const response = await api.get(`/api/messages/${conversationId}`);
-      setMessages(response.data.data || []);
+      const latestMessages = response.data.data || [];
+
+      setMessages(latestMessages);
     } catch (error) {
       console.error("Failed to fetch messages:", error);
     } finally {
@@ -44,7 +46,22 @@ const Inbox = () => {
       if (showLoading) setLoadingConvs(true);
 
       const response = await api.get("/api/conversations");
-      setConversations(response.data.data || []);
+      const latestConversations = response.data.data || [];
+
+      const selectedId = selectedRef.current?._id;
+
+      const cleanedConversations = latestConversations.map((conv) => {
+        if (conv._id === selectedId) {
+          return {
+            ...conv,
+            unreadCount: 0,
+          };
+        }
+
+        return conv;
+      });
+
+      setConversations(cleanedConversations);
     } catch (error) {
       console.error("Failed to fetch conversations:", error);
     } finally {
@@ -229,12 +246,22 @@ const Inbox = () => {
   // Only refresh conversation list.
   // Do NOT refresh selected chat messages repeatedly.
   useEffect(() => {
-    const interval = setInterval(() => {
-      fetchConversations(false);
-    }, 10000);
+    const interval = setInterval(async () => {
+      await fetchConversations(false);
+
+      if (selectedRef.current?._id) {
+        await fetchMessages(selectedRef.current._id, false);
+
+        try {
+          await api.patch(`/api/conversations/${selectedRef.current._id}/read`);
+        } catch (error) {
+          console.error("Failed to mark opened chat as read:", error);
+        }
+      }
+    }, 3000);
 
     return () => clearInterval(interval);
-  }, [fetchConversations]);
+  }, [fetchConversations, fetchMessages]);
 
   useEffect(() => {
     const socket = getSocket();

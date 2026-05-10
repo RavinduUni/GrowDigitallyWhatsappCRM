@@ -22,19 +22,36 @@ const ChatWindow = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
+  const firstLoadRef = useRef(true);
+
   useEffect(() => {
     const currentCount = messages.length;
     const previousCount = prevMessageCountRef.current;
 
-    if (currentCount > previousCount) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Opening/selecting a chat
+    if (firstLoadRef.current) {
+      bottomRef.current?.scrollIntoView({
+        behavior: "instant",
+        block: "end",
+      });
+
+      firstLoadRef.current = false;
+    }
+
+    // New incoming message
+    else if (currentCount > previousCount) {
+      bottomRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
     }
 
     prevMessageCountRef.current = currentCount;
   }, [messages.length]);
 
   useEffect(() => {
-    prevMessageCountRef.current = 0;
+    firstLoadRef.current = true;
+    prevMessageCountRef.current = messages.length;
   }, [conversation?._id]);
 
   useEffect(() => {
@@ -126,11 +143,10 @@ const ChatWindow = ({
             <button
               onClick={handleToggleAI}
               disabled={toggling}
-              className={`rounded-full px-3 py-1 font-label-sm text-label-sm flex items-center transition-all cursor-pointer ${
-                aiEnabled
+              className={`rounded-full px-3 py-1 font-label-sm text-label-sm flex items-center transition-all cursor-pointer ${aiEnabled
                   ? "bg-surface text-primary shadow-sm"
                   : "text-on-surface-variant hover:text-on-surface"
-              }`}
+                }`}
               id="toggle-ai-btn"
             >
               <span className="material-symbols-outlined text-[16px] mr-1">
@@ -142,11 +158,10 @@ const ChatWindow = ({
             <button
               onClick={handleToggleAI}
               disabled={toggling}
-              className={`rounded-full px-3 py-1 font-label-sm text-label-sm flex items-center transition-all cursor-pointer ${
-                !aiEnabled
+              className={`rounded-full px-3 py-1 font-label-sm text-label-sm flex items-center transition-all cursor-pointer ${!aiEnabled
                   ? "bg-surface text-primary shadow-sm"
                   : "text-on-surface-variant hover:text-on-surface"
-              }`}
+                }`}
             >
               <span className="material-symbols-outlined text-[16px] mr-1">
                 person
@@ -234,9 +249,8 @@ const ChatWindow = ({
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className={`flex ${
-                  i % 2 === 0 ? "justify-start" : "justify-end"
-                }`}
+                className={`flex ${i % 2 === 0 ? "justify-start" : "justify-end"
+                  }`}
               >
                 <div
                   className="rounded-lg p-3 animate-pulse"
