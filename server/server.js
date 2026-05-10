@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 import n8nRouter from "./routes/n8nRoutes.js";
 import conversationRouter from "./routes/conversationRoutes.js";
 import messageRouter from "./routes/messageRoutes.js";
+import authRouter from "./routes/authRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -34,6 +35,7 @@ app.get("/", (req, res) => {
   res.send("Server is running...");
 });
 
+app.use("/api/auth", authRouter);
 app.use("/api/n8n", n8nRouter);
 app.use("/api/conversations", conversationRouter);
 app.use("/api/messages", messageRouter);

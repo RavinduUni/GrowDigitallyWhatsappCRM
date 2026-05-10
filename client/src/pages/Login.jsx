@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import api from '../services/api.js';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,26 +14,31 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!email.trim() || !password.trim()) {
-      setError('Please enter both email and password.');
+      setError("Please enter both email and password.");
       return;
     }
 
     setLoading(true);
-    try {
-      // TODO: Call POST /api/auth/login
-      // const { data } = await login(email, password);
-      // loginUser(data.token, data.user);
 
-      // Placeholder — remove when API is connected
-      setError('API not connected yet. Wire POST /api/auth/login here.');
+    try {
+      const response = await api.post("/api/auth/login", {
+        email,
+        password,
+      });
+
+      const { token, user } = response.data;
+
+      loginUser(token, user);
+
+      navigate("/dashboard/inbox", { replace: true });
     } catch (err) {
       setError(
         err.response?.data?.message ||
         err.response?.data?.error ||
-        'Login failed. Please check your credentials.'
+        "Login failed. Please check your credentials."
       );
     } finally {
       setLoading(false);
