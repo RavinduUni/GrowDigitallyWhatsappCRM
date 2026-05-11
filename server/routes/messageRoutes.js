@@ -1,8 +1,13 @@
 import { Router } from "express";
-import { getMessagesByConversation } from "../controllers/messageController.js";
+import {
+    getMessagesByConversation,
+    sendManualMessage,
+} from "../controllers/messageController.js";
+import { protect } from "../middlewares/authMiddleware.js";
 
 const messageRouter = Router();
 
-messageRouter.get("/:conversationId", getMessagesByConversation);
+messageRouter.post("/send", protect, sendManualMessage);
+messageRouter.get("/:conversationId", protect, getMessagesByConversation);
 
 export default messageRouter;

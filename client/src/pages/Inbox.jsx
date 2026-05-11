@@ -131,19 +131,59 @@ const Inbox = () => {
               ...c,
               lastMessage: text,
               lastMessageTime: new Date().toISOString(),
+              aiEnabled: false,
+              humanTakeover: true,
+              status: "handoff",
             }
             : c
         )
       );
 
+      setSelected((prev) =>
+        prev
+          ? {
+            ...prev,
+            aiEnabled: false,
+            humanTakeover: true,
+            status: "handoff",
+          }
+          : prev
+      );
+
+      setAiEnabled(false);
+
       try {
-        // Manual reply API will be connected later.
-        // await api.post("/api/messages/send", {
-        //   conversationId: selected._id,
-        //   text,
-        // });
+        const response = await api.post("/api/messages/send", {
+          conversationId: selected._id,
+          text,
+        });
+
+        const savedMessage = response.data.data.message;
+        const updatedConversation = response.data.data.conversation;
+
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg._id === optimisticMsg._id ? savedMessage : msg
+          )
+        );
+
+        setConversations((prev) =>
+          prev.map((c) =>
+            c._id === selected._id
+              ? { ...c, ...updatedConversation }
+              : c
+          )
+        );
       } catch (error) {
         console.error("Send failed:", error);
+
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg._id === optimisticMsg._id
+              ? { ...msg, status: "failed" }
+              : msg
+          )
+        );
       }
     },
     [selected]
@@ -189,15 +229,13 @@ const Inbox = () => {
         { takeover }
       );
 
-      const updated = response.data.data || {
-        humanTakeover: takeover,
-        aiEnabled: !takeover,
-        status: takeover ? "handoff" : selected.status,
-      };
+      const updated = response.data.data;
 
-      setAiEnabled(updated.aiEnabled ?? false);
+      setAiEnabled(updated.aiEnabled);
 
-      setSelected((prev) => (prev ? { ...prev, ...updated } : prev));
+      setSelected((prev) =>
+        prev ? { ...prev, ...updated } : prev
+      );
 
       setConversations((prev) =>
         prev.map((c) =>
