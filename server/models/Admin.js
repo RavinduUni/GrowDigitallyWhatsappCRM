@@ -33,6 +33,8 @@ const adminSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
+        otpHash: String,
+        otpExpiresAt: Date,
     },
     { timestamps: true }
 );
@@ -47,6 +49,11 @@ adminSchema.pre("save", async function () {
 adminSchema.methods.comparePassword = async function (enteredPassword) {
     return bcrypt.compare(enteredPassword, this.password);
 };
+
+adminSchema.methods.compareOtp = async function (otp) {
+    return bcrypt.compare(otp, this.otpHash);
+};
+
 
 const Admin = mongoose.model("Admin", adminSchema);
 
