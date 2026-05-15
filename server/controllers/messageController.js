@@ -89,12 +89,13 @@ export const sendManualMessage = async (req, res) => {
             },
         });
     } catch (error) {
-        console.error("SEND MANUAL MESSAGE ERROR:", error);
+        console.error("SEND MANUAL MESSAGE ERROR:", error.response?.data || error);
 
-        res.status(500).json({
+        return res.status(error.response?.status || 500).json({
             success: false,
             message: "Failed to send manual message.",
-            error: error.message,
+            metaError: error.response?.data || null,
+            error: error.response?.data?.error?.message || error.message,
         });
     }
 };
